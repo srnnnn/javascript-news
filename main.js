@@ -3,28 +3,31 @@ let newsList=[];
 const menus = document.querySelectorAll(".menus button");
 console.log(menus);
 menus.forEach(menu => menu.addEventListener("click",(event)=>getNewsByCategory(event)));
+let url = new URL(`https://newsapi.org/v2/top-headlines?country=kr&apiKey=${API_KEY}`);
 
-const getLatesNews = async ()=>{
-    const url = new URL(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${API_KEY}`);
-    
-    const response = await fetch(url); 
+const getNews = async() =>{
+    const response = await fetch(url);
     const data = await response.json();
     newsList = data.articles;
     render();
+}
 
+const getLatesNews = async ()=>{
+    url = new URL(`https://newsapi.org/v2/top-headlines?country=kr&apiKey=${API_KEY}`);
+    getNews();
 };
 
 const getNewsByCategory= async (event)=>{
     const category = event.target.textContent.toLowerCase();
-    console.log(category);
-    const url = new URL(`https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${API_KEY}`);
-    const response = await fetch(url);
-    const data = await response.json();
-    console.log(data);
-    newsList = data.articles;
-    render();
+    url = new URL(`https://newsapi.org/v2/top-headlines?country=kr&category=${category}&apiKey=${API_KEY}`);
+    getNews();
     
-}
+};
+const getNewsByKeyword = async() =>{
+    const keyword = document.getElementById("search-input").value;
+    url = new URL(`https://newsapi.org/v2/top-headlines?country=kr&q=${keyword}&apiKey=${API_KEY}`);
+    getNews();
+};
 
 const render=()=>{
     const newsHTML = newsList.map(news=>`<div class="row news">
